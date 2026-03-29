@@ -7,7 +7,10 @@ router = APIRouter()
 
 @router.post("/register")
 async def register(user: UserCreate, db=Depends(get_db)):
-    return await register_user(db, user)
+    result = await register_user(db, user)
+    if result.get("error"):
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
 
 @router.post("/login")
 async def login(user: UserLogin, db=Depends(get_db)):

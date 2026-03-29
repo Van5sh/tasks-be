@@ -1,10 +1,10 @@
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import MongoClient
 from dotenv import load_dotenv
+
 load_dotenv()
 
-_client=None
+_client = None
 
 def get_client()-> AsyncIOMotorClient:
     global _client
@@ -14,4 +14,5 @@ def get_client()-> AsyncIOMotorClient:
 
 def get_db():
     client = get_client()
-    return client["tasks_db"]
+    db_name = os.getenv("MONGODB_DB", "tasks_db")
+    return client[db_name]
