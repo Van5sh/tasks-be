@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from app.db.database import get_db
 from app.api.auth.routes import router as auth_router
@@ -9,6 +10,14 @@ app = FastAPI(
     title="Tasks API",
     version="1.0.0",
     description="REST API with JWT auth, role-based access, and task CRUD.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
