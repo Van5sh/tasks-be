@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
@@ -12,12 +13,11 @@ app = FastAPI(
     description="REST API with JWT auth, role-based access, and task CRUD.",
 )
 
+frontend_origin = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://tasks-fe-one.vercel.app",
-    ],
+    allow_origins=[frontend_origin],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
