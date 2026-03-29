@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from datetime import date
 from enum import Enum
 
 class Gender(str, Enum):
@@ -6,9 +7,14 @@ class Gender(str, Enum):
     female = "Female"
     other = "Other"
 
-class User(BaseModel):
+class UserCreate(BaseModel):
     username: str
-    email: str
+    email: EmailStr
     password: str
-    dob: str
+    dob: date
     gender: Gender
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
