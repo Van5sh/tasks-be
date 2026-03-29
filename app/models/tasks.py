@@ -5,7 +5,11 @@ from datetime import datetime
 class Tasks(BaseModel):
     id: Optional[str] = None
     title: str
-    description: Optional[str] = None
-    completed: bool = False
+    tasks: list[Task]=[]
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Task(BaseModel):
+    title: str
+    description: Optional[str] = None
+    completed: bool = False
