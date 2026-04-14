@@ -2,7 +2,9 @@ from datetime import timedelta
 from app.config.security import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 def _model_dump(model):
-    return model.model_dump() if hasattr(model, "model_dump") else model.dict()
+    if hasattr(model, "model_dump"):
+        return model.model_dump(mode="json")
+    return model.dict()
 
 
 async def register_user(db, user):

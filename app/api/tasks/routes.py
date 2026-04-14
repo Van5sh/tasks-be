@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from bson.errors import InvalidId
 from app.db.database import get_db
 from app.dependency.auth import get_current_user
-from app.models.tasks import TaskCreate, TaskUpdate, TaskOut
+from app.models.tasks import TaskCreate, TaskInvite, TaskUpdate, TaskOut
 from app.services.tasks_service import (
     create_task,
+    invite_user_to_task,
     list_tasks,
     get_task,
     update_task,
@@ -60,3 +61,21 @@ async def remove(task_id: str, db=Depends(get_db), user=Depends(get_current_user
     if not ok:
         raise HTTPException(status_code=404, detail="Task not found")
     return {"message": "Task deleted"}
+
+
+@router.post("/tasks/{task_id}/invite", response_model=TaskOut)
+async def invite(
+    task_id: str,
+    invite_data: TaskInvite,
+    db=Depends(get_db),
+    user=Depends(get_current_user),
+):
+    try:
+        updated = await invite_user_to_task(db, user["sub"], task_id, invite_data.email)
+    except InvalidId:
+        raise HTTPException(status_code=400, detail="Invalid task id")
+    if not updated:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if updated.get("error"):
+        raise HTTPException(status_code=400, detail=updated["error"])
+    return updated
