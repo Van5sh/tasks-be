@@ -1,4 +1,5 @@
 import os
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 
@@ -9,7 +10,11 @@ _client = None
 def get_client()-> AsyncIOMotorClient:
     global _client
     if _client is None:
-        _client = AsyncIOMotorClient(os.getenv("MONGODB_URI"))
+        _client = AsyncIOMotorClient(
+            os.getenv("MONGODB_URI"),
+            tls=True,
+            tlsCAFile=certifi.where(),
+        )
     return _client
 
 def get_db():
